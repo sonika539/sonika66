@@ -1,18 +1,11 @@
-// const initialState = {
-//     value: 0,
-//     userData: {}
-//   };
-
 function addReducer(state, action) {
   switch (action.type) {
-    case 'INCREMENT':
-      return { ...state, value: state.value + 1 };
-    case 'DECREASE':
-      return { ...state, value: state.value - 1 };
     case 'FETCH_USER_SUCCESS':
-      return { ...state, userData: action.data };
-    case 'FETCH_EMPLOYEE_DATA_SUCCESS':
-      return { ...state, employeeData: action.data };
+      return { ...state, userData: action.payload };
+    case 'SEARCHED_TEXT':
+      return { ...state, text: action.payload };
+    case 'SAVE_SUGGESTIONS':
+      return { ...state, suggestions: action.payload };
     default:
       return state;
   }
