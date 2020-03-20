@@ -1,86 +1,77 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-
-import {
-  incrementAction,
-  decreaseAction,
-  getUsers,
-  getData,
-  getEmployeeData
-} from '../Actions/actions';
-//import { fetchUser } from '../Actions/epics';
+import { onTextChange } from '../Actions/actions';
+import './test.scss';
 
 class Test extends PureComponent {
-  // constructor(props) {
-  //     super(props);
-  // }
-  onClick = () => {
-    this.props.handleGetUsers();
-  };
-  onClickRx = () => {
-    this.props.handleGetUsersRx();
+  constructor(props) {
+    super(props);
+    this.state = {
+      text: ''
+    };
+  }
+
+  onTextChange = e => {
+    this.setState({ text: e.target.value });
+    this.props.handleTextChange(e);
   };
 
-  onClickEmployeeInfo = () => {
-    this.props.handleEmployeeInfo();
+  suggestionSelected = value => {
+    console.log('selected---');
   };
+
+  renderSuggestions() {
+    const { suggestions } = this.props;
+    if (suggestions.length === 0) {
+      return null;
+    }
+
+    let data = Object.keys(suggestions);
+
+    console.log('data', data);
+    console.log(suggestions);
+    return (
+      <div className="srchList">
+        <ul>
+          {data.map((item, index) => (
+            <li onClick={() => this.suggestionSelected(item)}>data</li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
 
   render() {
-    const {
-      value,
-      incrementAction,
-      decreaseAction,
-      userData,
-      employeeData
-    } = this.props;
     return (
       <div>
-        <h1>{value}</h1>
-        <button onClick={incrementAction}>increment</button>
-        <button onClick={decreaseAction}>decrease</button>
-        <button onClick={this.onClick}>userData</button>
-        <button onClick={this.onClickRx}>userDataRx</button>
-        <button onClick={this.onClickEmployeeInfo}>Employee Info</button>
-        {userData !== undefined && Array.isArray(userData) ? (
-          Array.from(userData).map(i => {
-            return (
-              <div>
-                {i.id} {i.title}
-              </div>
-            );
-          })
-        ) : (
-          <div></div>
-        )}
-        <br></br>
-        {employeeData !== undefined && Array.isArray(employeeData) ? (
-          Array.from(employeeData).map(i => {
-            return (
-              <div>
-                {i.id} {i.employee_name}
-              </div>
-            );
-          })
-        ) : (
-          <div></div>
-        )}
+        <div className="container">
+          <div className="row justify-content-md-center">
+            <div className="col-md-12 input">
+              <input
+                value={this.state.text}
+                onChange={this.onTextChange}
+                type="text"
+                placeHolder="Search"
+              />
+            </div>
+            <div className="col-md-12 justify-content-md-center">
+              {this.renderSuggestions()}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  value: state.value,
   userData: state.userData,
-  employeeData: state.employeeData
+  suggestions: state.suggestions,
+  text: state.text
 });
 
 const mapDispatchToProps = dispatch => ({
-  incrementAction: () => dispatch(incrementAction()),
-  decreaseAction: () => dispatch(decreaseAction()),
-  handleGetUsers: () => dispatch(getUsers()),
-  handleGetUsersRx: () => dispatch(getData()),
-  handleEmployeeInfo: () => dispatch(getEmployeeData())
+  handleTextChange: e => dispatch(onTextChange(e))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Test);
